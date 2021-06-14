@@ -12,9 +12,9 @@ create table DimCliente(
 
 create table DimTiempo(
 	fecha date,
-	anio date,
-	mes date,
-	dia date,
+	anio int,
+	mes int,
+	dia int,
 	primary key (fecha)
 );
 
@@ -37,17 +37,16 @@ create table DimArticulo(
 
 create table HechosVentas (
 	id_venta int not null,
-	fecha date,
+	fecha date not null,
 	id_tienda int not null,
 	id_cliente int not null,
 	id_art int not null,
 	cantidad int,
 	monto_venta float,
 	monto_costo float,
-	primary key (id_venta),
+	primary key (id_venta, fecha, id_tienda, id_cliente, id_art),
 	foreign key (fecha) references DimTiempo,
 	foreign key (id_tienda) references DimTienda,
 	foreign key (id_cliente) references DimCliente,
 	foreign key (id_art) references DimArticulo
 );
-

@@ -91,9 +91,9 @@ cant_art int,
 prec_art float, 
 tasa_iva  float
 primary key (id_vta, id_tienda, id_art),
+foreign key (id_vta, id_tienda) references venta(id_vta, id_tienda),
 foreign key (id_art) references articulo
 )
-
 
 BEGIN TRANSACTION
 -- Estado
@@ -133,7 +133,7 @@ SELECT * FROM ARTICULO
 -- Tienda
 insert into TIENDA(id_tienda, nomb_tienda, direc_tienda, tel_tienda, no_emps_tda, id_edo) values
 	(01, 'Sucursal Norte', 'Sierra Vieja 2, lote 2, Cuautitlán', 5558619840, 2, 02),
-	(02, 'Sucursal Sur', 'Vasco de Quiroga 05349', 5552579200, 2, 01)
+	(02, 'Sucursal Centro', 'Vasco de Quiroga 05349', 5552579200, 2, 01)
 ;
 SELECT * FROM TIENDA
 
@@ -168,7 +168,23 @@ SELECT * FROM VENTA
 -- Venta Artículo
 insert into VTA_ART(id_vta, id_tienda, id_art, cant_art, prec_art,tasa_iva) values
 	(01, 02, 20, 2, 500, 16),
-	(02, 01, 11, 2, 200, 16),
-	(01, 02, 21, 1, 500, 16)
-;
-SELECT * FROM VTA_ART
+	(02, 01, 11, 2, 100, 16),
+	(03, 02, 21, 1, 250, 16)
+; 
+SELECT * FROM VTA_ART;
+
+
+
+--SP
+GO
+CREATE PROCEDURE ObtenerFechas
+	@anio int,
+	@mes int
+AS
+BEGIN
+	select fecha_vta from venta 
+		where YEAR(fecha_vta) =  YEAR(GETDATE()) AND MONTH(fecha_vta) = MONTH(GETDATE());
+END
+
+
+
