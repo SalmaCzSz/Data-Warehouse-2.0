@@ -174,17 +174,11 @@ insert into VTA_ART(id_vta, id_tienda, id_art, cant_art, prec_art,tasa_iva) valu
 SELECT * FROM VTA_ART;
 
 
-
---SP
-GO
-CREATE PROCEDURE ObtenerFechas
-	@anio int,
-	@mes int
+--SP necesario para el proceso ETL
+CREATE PROCEDURE sp_ObtenerFechas
 AS
 BEGIN
 	select fecha_vta from venta 
 		where YEAR(fecha_vta) =  YEAR(GETDATE()) AND MONTH(fecha_vta) = MONTH(GETDATE());
 END
-
-
-
+exec sp_ObtenerFechas
