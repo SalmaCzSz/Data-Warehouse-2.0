@@ -1,5 +1,4 @@
 create database dw;
-
 use dw;
 
 create table DimCliente(
