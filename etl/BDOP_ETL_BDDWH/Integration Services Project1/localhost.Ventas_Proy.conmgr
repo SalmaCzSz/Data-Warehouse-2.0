@@ -1,0 +1,10 @@
+﻿<?xml version="1.0"?>
+<DTS:ConnectionManager xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:ObjectName="localhost.Ventas_Proy"
+  DTS:DTSID="{0A44004B-51D6-4932-B508-63D2A53C1193}"
+  DTS:CreationName="ADO.NET:System.Data.SqlClient.SqlConnection, System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <DTS:ObjectData>
+    <DTS:ConnectionManager
+      DTS:ConnectionString="Data Source=localhost;Initial Catalog=Ventas_Proy;Integrated Security=True;Application Name=&quot;SSIS-Integration Services Project1-{0A44004B-51D6-4932-B508-63D2A53C1193}localhost.Ventas_Proy&quot;;" />
+  </DTS:ObjectData>
+</DTS:ConnectionManager>
