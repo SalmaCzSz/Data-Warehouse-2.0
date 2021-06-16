@@ -1,3 +1,6 @@
+<?php
+    include("bd/Consultas.php")
+?>
 <!DOCTYPE html>
 <html>
 
@@ -21,10 +24,10 @@
                 </a>
                 <hr class="sidebar-divider my-0">
                 <ul class="navbar-nav text-light" id="accordionSidebar">
-                    <li class="nav-item"><a class="nav-link " href="index.html">
+                    <li class="nav-item"><a class="nav-link " href="index.php">
                         <i class="fas fa-tachometer-alt"></i><span>Tablero de Control</span></a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="historico.html">
+                    <li class="nav-item"><a class="nav-link" href="historico.php">
                         <i class="fas fa-table"></i><span>Histórico</span></a>
                     </li>
                     <li class="nav-item dropdown"><a class="nav-link btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"> <!--href="reporte.html"-->
@@ -70,7 +73,7 @@
                     <h3 class="text-dark mb-4">Histórico</h3>
                     <div class="card shadow">
                         <div class="card-body">
-                            <div class="row">
+                            <!--<div class="row">
                                 <div class="col-md-6 text-nowrap">
                                     <div id="dataTable_length" class="dataTables_length" aria-controls="dataTable">
                                         <label class="form-label">Show&nbsp;
@@ -84,8 +87,7 @@
                                         </label>
                                     </div>
                                 </div>
-                                
-                            </div>
+                            </div>-->
                             <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
                                 <table class="table my-0" id="dataTable">
                                     <thead>
@@ -101,15 +103,10 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td> 1 </td>
-                                            <td>2008/11/28</td>
-                                            <td>Sucursal Norte</td>
-                                            <td>Helado</td>
-                                            <td>2</td>
-                                            <td>$25.00</td>
-                                            <td>$50.00</td>
-                                        </tr>      
+                                        <?php
+                                            $consultas = new Consultas();
+                                            $consultas->recuperar_HechosVentas();
+                                        ?>   
                                     </tbody>
                                     <tfoot>
                                         <tr>
