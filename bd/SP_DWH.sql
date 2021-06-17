@@ -197,6 +197,7 @@ BEGIN
 		FROM HechosVentas JOIN DimTienda ON HechosVentas.id_tienda = DimTienda.id_tienda
 		Where YEAR(HechosVentas.fecha) = '' + YEAR(GETDATE()) + ''
 		AND MONTH(HechosVentas.fecha) = @mes
+		AND DimTienda.nomb_tienda = @tienda
 		GROUP BY DimTienda.nomb_tienda
 END	
-EXEC sp_IngresosTienda 4
+EXEC sp_IngresosTienda 5, 'Sucursal Puebla'
