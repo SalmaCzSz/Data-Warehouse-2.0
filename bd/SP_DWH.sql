@@ -142,3 +142,61 @@ BEGIN
 		WHERE MONTH(HechosVentas.fecha) = @mes and YEAR(HechosVentas.fecha) = YEAR(GETDATE())
 END
 EXEC sp_IngresosMes 1;
+
+GO
+CREATE PROCEDURE sp_ProductosTienda @sucursal varchar(15)
+AS
+	declare @mes int;
+		set @mes = MONTH(GETDATE());
+	declare @anio int;
+		set @anio = YEAR(GETDATE());
+BEGIN
+	IF(@mes = '1')
+	BEGIN
+		set @mes = '12';
+		set @anio = @anio-1;
+	END
+
+	Select DISTINCT DimArticulo.nomb_art Articulos
+		FROM DimArticulo JOIN HechosVentas ON DimArticulo.id_art = HechosVentas.id_art
+		JOIN DimTienda ON DimTienda.id_tienda = HechosVentas.id_tienda
+		WHERE DimTienda.nomb_tienda = @sucursal
+		AND YEAR(HechosVentas.fecha) = @anio;		
+END
+EXEC sp_ProductosTienda 'Sucursal Norte';
+
+GO
+CREATE PROCEDURE sp_VentasProductoTienda @sucursal varchar(15), @producto varchar (20)
+AS
+	declare @mes int;
+		set @mes = MONTH(GETDATE());
+	declare @anio int;
+		set @anio = YEAR(GETDATE());
+BEGIN
+	IF(@mes = '1')
+	BEGIN
+		set @mes = '12';
+		set @anio = @anio-1;
+	END
+	
+	Select SUM(HechosVentas.cantidad) Cantidad
+		FROM HechosVentas JOIN DimArticulo ON DimArticulo.id_art = HechosVentas.id_art
+		JOIN DimTienda ON DimTienda.id_tienda = HechosVentas.id_tienda
+		WHERE DimTienda.nomb_tienda = @sucursal
+		AND DimArticulo.nomb_art = @producto
+		AND YEAR(HechosVentas.fecha) = @anio;
+END
+EXEC sp_VentasProductoTienda 'Sucursal Norte' , 'Obleas';
+
+GO
+
+CREATE PROCEDURE sp_IngresosTienda @mes int, @tienda varchar(15)
+AS
+BEGIN
+	SELECT SUM(HechosVentas.monto_venta) as monto_total
+		FROM HechosVentas JOIN DimTienda ON HechosVentas.id_tienda = DimTienda.id_tienda
+		Where YEAR(HechosVentas.fecha) = '' + YEAR(GETDATE()) + ''
+		AND MONTH(HechosVentas.fecha) = @mes
+		GROUP BY DimTienda.nomb_tienda
+END	
+EXEC sp_IngresosTienda 4
