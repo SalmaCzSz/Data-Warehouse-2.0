@@ -185,17 +185,7 @@
             ";
             echo "</script>";
             sqlsrv_close($conn_sis);
-        }
-
-
-
-
-
-
-
-
-
-        
+        }     
     }
 ?>
    
