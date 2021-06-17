@@ -43,7 +43,7 @@
                             <li class="nav-item"> <a class="dropdown-item " href="#"> 
                                 <i ></i><span> Tiempo </span> </a>
                             </li>
-                            <li class="nav-item"> <a class="dropdown-item " href="#"> 
+                            <li class="nav-item"> <a class="dropdown-item " href="reporte_tienda.php"> 
                                <i ></i><span> Tiendas </span> </a>
                             </li>
                         </ul>
@@ -162,7 +162,7 @@
                         <div class="col-lg-8 col-xl-12">
                             <div class="card shadow mb-4">
                                 <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h6 class="text-primary fw-bold m-0">INGRESOS POR MES (<?php echo date('Y'); ?>)</h6>
+                                    <h6 class="text-primary fw-bold m-0">INGRESOS <?php echo date('Y'); ?> </h6>
                                     <div class="dropdown no-arrow"><button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button"><i class="fas fa-ellipsis-v text-gray-400"></i></button></div>
                                 </div>
                                 <div class="card-body" style="margin:auto; width:90%; heigth:100%"> <!-- style="margin:auto; width:50%; heigth:100%"-->
@@ -226,7 +226,7 @@
                 </div>
             <footer class="bg-white sticky-footer">
                 <div class="container my-auto">
-                    <div class="text-center my-auto copyright"><span>Copyright © Brand 2021</span></div>
+                    <div class="text-center my-auto copyright"><span>4CV70 - EQUIPO 5</span></div>
                 </div>
             </footer>
         </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
