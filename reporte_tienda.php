@@ -1,10 +1,13 @@
+<?php
+    include("bd/Reportes.php");
+?>
 <!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Reportes</title>
+    <title>Tablero de Control</title>
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
     <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
@@ -15,16 +18,17 @@
 <body id="page-top">
     <div id="wrapper">
         <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0">
-            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+            <div class="container-fluid d-flex flex-column p-0">
+                <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
                     <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-leaf"></i></div>
                     <div class="sidebar-brand-text mx-3"><span>Menú</span></div>
                 </a>
                 <hr class="sidebar-divider my-0">
                 <ul class="navbar-nav text-light" id="accordionSidebar">
-                    <li class="nav-item"><a class="nav-link" href="index.html">
+                    <li class="nav-item"><a class="nav-link" href="index.php">
                         <i class="fas fa-tachometer-alt"></i><span>Tablero de Control</span></a>
                     </li>
-                    <li class="nav-item"><a class="nav-link " href="historico.html">
+                    <li class="nav-item"><a class="nav-link" href="historico.php">
                         <i class="fas fa-table"></i><span>Histórico</span></a>
                     </li>
                     <li class="nav-item dropdown"><a class="nav-link btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"> <!--href="reporte.html"-->
@@ -39,7 +43,7 @@
                             <li class="nav-item"> <a class="dropdown-item " href="#"> 
                                 <i ></i><span> Tiempo </span> </a>
                             </li>
-                            <li class="nav-item"> <a class="dropdown-item " href="#"> 
+                            <li class="nav-item"> <a class="dropdown-item " href="reporte_tienda.php"> 
                                <i ></i><span> Tiendas </span> </a>
                             </li>
                         </ul>
@@ -67,12 +71,31 @@
                     </div>
                 </nav>
                 <div class="container-fluid">
-                    <h3 class="text-dark mb-1">Blank Page</h3>
+                    <div class="d-sm-flex justify-content-between align-items-center mb-4">
+                        <h3 class="text-dark mb-0">Desempeño de las ventas</h3>
+                    </div>
+                    <div class="row" id="grafica_VentasTienda">
+                        <div class="col-lg-8 col-xl-12">
+                            <div class="card shadow mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="text-primary fw-bold m-0">INGRESO MENSUAL POR TIENDA - <?php echo date('Y'); ?></h6>
+                                    <div class="dropdown no-arrow">
+                                        <button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button"><i class="fas fa-ellipsis-v text-gray-400"></i></button>
+                                    </div>
+                                </div>
+                                <div class="card-body" style="margin:auto; width:90%; heigth:100%"> <!-- style="margin:auto; width:50%; heigth:100%"-->
+                                    <?php
+                                        $reportes = new Reportes();
+                                        $reportes->recuperar_IngresosTienda();
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
             <footer class="bg-white sticky-footer">
                 <div class="container my-auto">
-                    <div class="text-center my-auto copyright"><span>Copyright © Brand 2021</span></div>
+                    <div class="text-center my-auto copyright"><span>4CV70 - EQUIPO 5</span></div>
                 </div>
             </footer>
         </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
@@ -81,6 +104,8 @@
     <script src="assets/js/chart.min.js"></script>
     <script src="assets/js/bs-init.js"></script>
     <script src="assets/js/theme.js"></script>
+    <!--Scripts para las gráficas-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.3.2/dist/chart.min.js"> </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 </body>
-
 </html>
