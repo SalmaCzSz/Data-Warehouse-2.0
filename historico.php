@@ -36,7 +36,7 @@
                             <li class="nav-item"> <a class="dropdown-item" href="#"> 
                                 <i class="fas"></i><span> Artículos </span> </a>
                              </li>
-                            <li class="nav-item"> <a class="dropdown-item " href="#"> 
+                            <li class="nav-item"> <a class="dropdown-item " href="reporte_cliente.php"> 
                                <i ></i><span> Clientes </span> </a>
                             </li>
                             <li class="nav-item"> <a class="dropdown-item " href="#"> 
