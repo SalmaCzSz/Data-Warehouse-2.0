@@ -201,3 +201,97 @@ BEGIN
 		GROUP BY DimTienda.nomb_tienda
 END	
 EXEC sp_IngresosTienda 5, 'Sucursal Puebla'
+
+GO
+CREATE PROCEDURE sp_NoVentasTienda @mes int, @tienda varchar(15)
+AS
+BEGIN
+	SELECT COUNT(HechosVentas.monto_venta) as no_ventas
+		FROM HechosVentas JOIN DimTienda ON HechosVentas.id_tienda = DimTienda.id_tienda
+		Where YEAR(HechosVentas.fecha) = '' + YEAR(GETDATE()) + ''
+		AND MONTH(HechosVentas.fecha) = @mes
+		AND DimTienda.nomb_tienda = @tienda
+		GROUP BY DimTienda.nomb_tienda
+END	
+EXEC sp_NoVentasTienda 3, 'Sucursal Norte'
+
+GO
+CREATE PROCEDURE sp_NombresClientes
+AS
+BEGIN
+	SELECT DimCliente.nomb_cte FROM DimCliente;
+END
+EXEC sp_NombresClientes
+
+GO
+CREATE PROCEDURE sp_ClPrAd @cliente varchar(25)
+AS
+BEGIN
+	SELECT DISTINCT(DimArticulo.nomb_art) Criterio, SUM(HechosVentas.cantidad) Cantidad
+		FROM DimArticulo JOIN HechosVentas ON DimArticulo.id_art = HechosVentas.id_art
+		JOIN DimCliente ON DimCliente.id_cliente = HechosVentas.id_cliente
+		WHERE DimCliente.nomb_cte = @cliente
+		GROUP BY DimArticulo.nomb_art;
+END
+EXEC sp_ClPrAd 'Norman Arredondo'
+
+GO
+CREATE PROCEDURE sp_ClComSuc @cliente varchar(25)
+AS
+BEGIN
+	SELECT DISTINCT(DimTienda.nomb_tienda) Criterio, COUNT(DISTINCT (HechosVentas.id_venta)) Cantidad
+		FROM DimTienda JOIN HechosVentas ON DimTienda.id_tienda = HechosVentas.id_tienda
+		JOIN DimCliente ON DimCliente.id_cliente = HechosVentas.id_cliente
+		WHERE DimCliente.nomb_cte = @cliente
+		GROUP BY DimTienda.nomb_tienda;
+END
+EXEC sp_ClComSuc 'Norman Arredondo'
+
+GO
+CREATE PROCEDURE sp_MontoComSuc @cliente varchar(25)
+AS
+BEGIN
+	SELECT DISTINCT(DimArticulo.nomb_art) Criterio, SUM(HechosVentas.monto_venta) Cantidad
+		FROM DimArticulo JOIN HechosVentas ON DimArticulo.id_art = HechosVentas.id_art
+		JOIN DimCliente ON DimCliente.id_cliente = HechosVentas.id_cliente
+		WHERE DimCliente.nomb_cte = @cliente
+		GROUP BY DimArticulo.nomb_art;
+END
+EXEC sp_MontoComSuc 'Norman Arredondo'
+
+GO
+CREATE PROCEDURE sp_TotalCompras @cliente varchar(25)
+AS
+BEGIN
+	SELECT COUNT(DISTINCT(HechosVentas.id_venta)) Total
+		FROM DimCliente JOIN HechosVentas ON DimCliente.id_cliente = HechosVentas.id_cliente
+		WHERE DimCliente.nomb_cte = @cliente;
+END
+EXEC sp_TotalCompras 'Salma Cruz'
+
+GO
+CREATE PROCEDURE sp_TotalProductos @cliente varchar(25)
+AS
+BEGIN
+	SELECT SUM(HechosVentas.cantidad) Total
+		FROM DimCliente JOIN HechosVentas ON DimCliente.id_cliente = HechosVentas.id_cliente
+		WHERE DimCliente.nomb_cte = @cliente;
+END
+EXEC sp_TotalProductos'Norman Arredondo'
+
+GO
+CREATE PROCEDURE sp_MontoTotalCl @cliente varchar(25)
+AS
+BEGIN
+	SELECT SUM(HechosVentas.monto_venta) Total
+		FROM DimCliente JOIN HechosVentas ON DimCliente.id_cliente = HechosVentas.id_cliente
+		WHERE DimCliente.nomb_cte = @cliente;
+END
+EXEC sp_MontoTotalCl 'Norman Arredondo'
+
+
+
+
+
+
+

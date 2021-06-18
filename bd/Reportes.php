@@ -1,6 +1,21 @@
 <?php 
     class reportes {
-        /* Función para el Histórico */
+        /* Funciones para reporte_tienda.php */
+        function recuperar_InfoTienda($tienda){
+            include("Conexion.php");
+
+            $query = "exec sp_InfoTienda 'Sucursal " . $tienda ."'";
+            $resultado = sqlsrv_query($conn_sis, $query);
+            
+            while($fila = sqlsrv_fetch_array($resultado)){
+                echo "ID: $fila[id_tienda] <br>";
+                echo "Telefono: $fila[tel_tienda] <br>";
+                echo "Estado: $fila[nomb_edo] <br>";
+                echo "Dirección: $fila[direc_tienda]";
+            }
+            sqlsrv_close($conn_sis);
+        }
+
         function recuperar_IngresosTienda(){
             include("Conexion.php");
 
@@ -99,7 +114,6 @@
             echo "</script>";
             sqlsrv_close($conn_sis);
         }
-
 
         function recuperar_NoVentasTienda(){
             include("Conexion.php");
@@ -200,5 +214,118 @@
             sqlsrv_close($conn_sis);
         }
     
+
+        /* Funciones para reporte_cliente.php */
+        function recuperar_Clientes(){
+            include("Conexion.php");
+
+            $query = "exec sp_NombresClientes";
+            $resultado = sqlsrv_query($conn_sis, $query);
+
+            while ($fila = sqlsrv_fetch_array($resultado)) {
+                echo "<option value='" . $fila['nomb_cte']. "'>" . $fila['nomb_cte'] ."</option>";
+            }
+
+            sqlsrv_close($conn_sis);
+        }
+
+        function recuperar_InfoClientes($cliente){
+            include("Conexion.php");
+
+            $query = "exec sp_InfoCliente '" . $cliente ."'";
+            $resultado = sqlsrv_query($conn_sis, $query);
+            
+            while($fila = sqlsrv_fetch_array($resultado)){
+                echo "<td colspan='3'> <label> ID: " . $fila['id_cliente'] ."</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                echo " <label> Telefono: " . $fila['tel_cte'] ."</label> <br>";
+                echo " <label> Dirección: " . $fila['dir_cte'] ."</label> </td>";
+            }
+            sqlsrv_close($conn_sis);
+        }
+
+
+        function recuperar_EstadisticasCliente($sp, $cliente, $canva){
+            include("Conexion.php");
+
+            $query = "exec sp_" . $sp . " '". $cliente . "'";
+            $resultado = sqlsrv_query($conn_sis, $query);
+            $productos = array();
+            $cantidad = array();
+            $cont = 1;
+            
+            while ($fila = sqlsrv_fetch_array($resultado)) {
+                $productos[$cont] = $fila['Criterio'];
+                $cantidad[$cont] = $fila['Cantidad']; 
+                $cont++;
+            }
+
+            $array_productos = implode("', '",$productos);
+            $array_cantidad = implode(',',$cantidad);
+
+            echo "<canvas id='" . $canva . "';> </canvas>";
+            echo "<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js'></script>";
+
+            echo "<script>                          
+                var grafica = document.getElementById('" . $canva . "').getContext('2d');
+                var ingresos_mes = new Chart( grafica, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['" . $array_productos . "'],
+                        datasets: [{
+                            label: 'Productos',
+                            data: [" . $array_cantidad . "],
+                            backgroundColor: [
+                                'rgb(221, 160, 221)',
+                                'rgb(255, 192, 203)',
+                                'rgb(75, 192, 192)',
+                                'rgb(175, 238, 238)',
+                                'rgb(255, 205, 86)',
+                                'rgb(201, 203, 207)',
+                                'rgb(54, 162, 235)'
+                            ],
+                            hoverOffset: 4
+                        }]
+                    }
+                }); 
+            ";
+            echo "</script>";
+            sqlsrv_close($conn_sis);
+        }   
+
+        function recuperar_TotalCompras($cliente){
+            include("Conexion.php");
+
+            $query = "exec sp_TotalCompras '" . $cliente . "'"; 
+            $resultado = sqlsrv_query($conn_sis, $query);
+            
+            while ($fila = sqlsrv_fetch_array($resultado)){
+                echo " ▷ $fila[Total] compras";
+            }
+            sqlsrv_close($conn_sis);
+        }
+
+        function recuperar_TotalProductos($cliente){
+            include("Conexion.php");
+
+            $query = "exec sp_TotalProductos '" . $cliente . "'"; 
+            $resultado = sqlsrv_query($conn_sis, $query);
+            
+            while ($fila = sqlsrv_fetch_array($resultado)){
+                echo " ▷ $fila[Total] productos";
+            }
+            sqlsrv_close($conn_sis);
+        }
+
+        function recuperar_MontoTotalCl($cliente){
+            include("Conexion.php");
+
+            $query = "exec sp_MontoTotalCl '" . $cliente . "'"; 
+            $resultado = sqlsrv_query($conn_sis, $query);
+            
+            while ($fila = sqlsrv_fetch_array($resultado)){
+                echo " ▷ $ $fila[Total] ";
+            }
+            sqlsrv_close($conn_sis);
+        }
     }
 ?>
