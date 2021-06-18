@@ -34,13 +34,16 @@
                     <li class="nav-item dropdown"><a class="nav-link btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"> <!--href="reporte.html"-->
                         <i class="fas fa-window-maximize"></i><span>Reportes</span></a>
                         <ul class="dropdown-menu text-light" aria-labelledby="dropdownMenuLink">
-                            <li class="nav-item"> <a class="dropdown-item" href="#"> 
+                            <li class="nav-item"> <a class="dropdown-item" href="reporte_adhoc.php"> 
+                                <i class="fas"></i><span> Ad-hoc </span> </a>
+                             </li>
+                            <li class="nav-item"> <a class="dropdown-item" href="reporte_articulo.php"> 
                                 <i class="fas"></i><span> Artículos </span> </a>
                              </li>
                             <li class="nav-item"> <a class="dropdown-item " href="reporte_cliente.php"> 
                                <i ></i><span> Clientes </span> </a>
                             </li>
-                            <li class="nav-item"> <a class="dropdown-item " href="#"> 
+                            <li class="nav-item"> <a class="dropdown-item " href="reporte_tiempo.php"> 
                                 <i ></i><span> Tiempo </span> </a>
                             </li>
                             <li class="nav-item"> <a class="dropdown-item " href="reporte_tienda.php"> 

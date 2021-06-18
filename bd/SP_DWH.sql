@@ -11,6 +11,7 @@ select * from DimCliente;
 select * from DimArticulo;
 SELECT * FROM Dimtiempo;
 
+-- historico.php
 GO
 CREATE PROCEDURE sp_HechosVentas
 AS
@@ -25,6 +26,8 @@ BEGIN
 END
 EXEC sp_HechosVentas
 
+
+-- index.php
 GO
 CREATE PROCEDURE sp_TotalVentasAnio
 AS
@@ -34,9 +37,7 @@ BEGIN
 		Where YEAR(HechosVentas.fecha) = '' + YEAR(GETDATE()) + ''
 END
 EXEC sp_TotalVentasAnio
-
 GO
-
 CREATE PROCEDURE sp_ClienteDelMes
 AS
 	declare @mesactual int;
@@ -68,7 +69,6 @@ BEGIN
 		ORDER BY SUM(HechosVentas.Cantidad) DESC;
 END
 EXEC sp_ClienteDelMes
-
 GO
 CREATE PROCEDURE sp_TiendaMasVentas
 AS
@@ -100,7 +100,6 @@ BEGIN
 		ORDER BY SUM(HechosVentas.id_venta) DESC;
 END
 EXEC sp_TiendaMasVentas
-
 GO
 CREATE PROCEDURE sp_ProductoMasVendido
 AS
@@ -132,7 +131,6 @@ BEGIN
 		ORDER BY COUNT(HechosVentas.cantidad) DESC;
 END
 EXEC sp_ProductoMasVendido
-
 GO
 CREATE PROCEDURE sp_IngresosMes @mes int
 AS
@@ -289,9 +287,85 @@ BEGIN
 END
 EXEC sp_MontoTotalCl 'Norman Arredondo'
 
+GO
+CREATE PROCEDURE sp_InfoCliente @cliente varchar(25)
+AS
+BEGIN
+	SELECT DimCliente.id_cliente, DimCliente.tel_cte, DimCliente.dir_cte
+		FROM DimCliente
+		WHERE DimCliente.nomb_cte = @cliente;
+END
+EXEC sp_InfoCliente 'Norman Arredondo'
+
+GO
+CREATE PROCEDURE sp_InfoTienda @sucursal varchar(25)
+AS
+BEGIN
+	SELECT DimTienda.id_tienda, DimTienda.direc_tienda, DimTienda.tel_tienda, DimTienda.nomb_edo
+		FROM DimTienda
+		WHERE DimTienda.nomb_tienda = @sucursal;
+END
+EXEC sp_InfoTienda 'Sucursal Norte'
+
+--Tiendas
+GO
+CREATE PROCEDURE sp_NombresTiendas
+AS
+BEGIN
+	SELECT DimTienda.nomb_tienda FROM DimTienda;
+END
+EXEC sp_NombresTiendas
 
 
-
-
-
-
+-- Articulos
+GO
+CREATE PROCEDURE sp_NombresArticulos
+AS
+BEGIN
+	SELECT DimArticulo.nomb_art FROM DimArticulo;
+END
+EXEC sp_NombresArticulos
+GO
+CREATE PROCEDURE sp_InfoArticulo @producto varchar(25)
+AS
+BEGIN
+	SELECT DimArticulo.id_art, DimArticulo.nomb_proveedor, DimArticulo.marca_art
+		FROM DimArticulo WHERE DimArticulo.nomb_art = @producto;
+END
+EXEC sp_InfoArticulo 'Obleas';
+GO
+CREATE PROCEDURE sp_UnidadesTotales @producto varchar(25)
+AS
+BEGIN
+	SELECT SUM(HechosVentas.cantidad) cantidad
+	FROM HechosVentas JOIN DimArticulo ON HechosVentas.id_art = DimArticulo.id_art
+	WHERE DimArticulo.nomb_art = @producto
+	GROUP BY DimArticulo.nomb_art;
+END
+EXEC sp_UnidadesTotales 'Helado'
+GO
+CREATE PROCEDURE sp_IngresosProductoTienda @mes int, @tienda varchar(15), @articulo varchar(20)
+AS
+BEGIN
+	SELECT SUM(HechosVentas.monto_venta) as monto_total
+		FROM HechosVentas JOIN DimTienda ON HechosVentas.id_tienda = DimTienda.id_tienda
+		JOIN DimArticulo ON HechosVentas.id_art = DimArticulo.id_art
+		Where YEAR(HechosVentas.fecha) = '' + YEAR(GETDATE()) + ''
+		AND MONTH(HechosVentas.fecha) = @mes
+		AND DimTienda.nomb_tienda = @tienda
+		AND DimArticulo.nomb_art = @articulo
+		GROUP BY DimTienda.nomb_tienda;
+END	
+EXEC sp_IngresosProductoTienda 5, 'Sucursal Norte', 'Helado'
+GO
+CREATE PROCEDURE sp_UnidadesSucursal @tienda varchar(15), @articulo varchar(20)
+AS
+BEGIN
+	SELECT SUM(HechosVentas.cantidad) 
+		FROM HechosVentas JOIN DimArticulo ON HechosVentas.id_art = DimArticulo.id_art
+		JOIN DimTienda ON HechosVentas.id_tienda = DimTienda.id_tienda
+		Where YEAR(HechosVentas.fecha) = '' + YEAR(GETDATE()) + ''
+		AND DimTienda.nomb_tienda = @tienda
+		AND DimArticulo.nomb_art = @articulo
+END	
+EXEC sp_UnidadesSucursal 'Sucursal Norte', 'Helado'

@@ -327,5 +327,175 @@
             }
             sqlsrv_close($conn_sis);
         }
+
+        /* Funciones para reporte_articulo.php */
+        function recuperar_Articulos(){
+            include("Conexion.php");
+
+            $query = "exec sp_NombresArticulos";
+            $resultado = sqlsrv_query($conn_sis, $query);
+
+            while ($fila = sqlsrv_fetch_array($resultado)) {
+                echo "<option value='" . $fila['nomb_art']. "'>" . $fila['nomb_art'] ."</option>";
+            }
+
+            sqlsrv_close($conn_sis);
+        }
+
+        function recuperar_InfoArticulos($articulo){
+            include("Conexion.php");
+
+            $query = "exec sp_InfoArticulo '" . $articulo ."'";
+            $resultado = sqlsrv_query($conn_sis, $query);
+            
+            while($fila = sqlsrv_fetch_array($resultado)){
+                echo " <label> ID: " . $fila['id_art'] ."</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                echo " <label> Proveedor: " . $fila['nomb_proveedor'] ."</label> <br>";
+                echo " <label> Marca: " . $fila['marca_art'] ."</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+            }
+
+            $query_unidades = "exec sp_UnidadesTotales '" . $articulo ."'";
+            $resultado_unidades = sqlsrv_query($conn_sis, $query_unidades);
+            $fila_unidades = sqlsrv_fetch_array($resultado_unidades);
+
+            echo " <label>Unidades vendidas: " . $fila_unidades['cantidad'] ."</label>";
+
+            sqlsrv_close($conn_sis);
+        }
+
+        /* Funciones para reporte_adhoc.php */
+        function recuperar_Tiendas(){
+            include("Conexion.php");
+
+            $query = "exec sp_NombresTiendas";
+            $resultado = sqlsrv_query($conn_sis, $query);
+
+            while ($fila = sqlsrv_fetch_array($resultado)) {
+                echo "<option value='" . $fila['nomb_tienda']. "'>" . $fila['nomb_tienda'] ."</option>";
+            }
+
+            sqlsrv_close($conn_sis);
+        }
+
+        function recuperar_TotalUnidades($sucursal, $articulo){
+            include("Conexion.php");
+
+            $query = "exec sp_UnidadesSucursal '" . $sucursal . "', '" . $articulo . "'"; 
+            $resultado = sqlsrv_query($conn_sis, $query);
+            
+            while ($fila = sqlsrv_fetch_array($resultado)){
+                if ( $fila['Unidades'] == null ) {
+                    echo " ▷ 0 unidades vendidas";
+                } else {
+                    echo " ▷ $fila[Unidades] unidades vendidas";
+                }
+            }
+            sqlsrv_close($conn_sis);
+        }
+
+
+
+
+
+        function recuperar_IngresosProductoTienda($articulo){
+            include("Conexion.php");
+
+            $ingresos_t1 = array();
+            $t1 = 1;
+
+            while ($t1 <= 12) {
+                $query = "exec sp_IngresosProductoTienda " . $t1 . ", 'Sucursal Norte', '" . $articulo . "'" ;
+                $resultado = sqlsrv_query($conn_sis, $query);
+                $fila = sqlsrv_fetch_array($resultado);
+                
+                if(is_null($fila['monto_total'])){
+                    $ingresos_t1[$t1] = '0'; 
+                } else {
+                    $ingresos_t1[$t1] = $fila['monto_total']; 
+                }
+                $t1++;
+            }
+
+            $sucursal_norte = implode(',',$ingresos_t1);
+
+
+            $ingresos_t2 = array();
+            $t2 = 1;
+
+            while ($t2 <= 12) {
+                $query = "exec sp_IngresosProductoTienda " . $t2 . ", 'Sucursal Sur', '" . $articulo . "'" ;
+                $resultado = sqlsrv_query($conn_sis, $query);
+                $fila = sqlsrv_fetch_array($resultado);
+                
+                if(is_null($fila['monto_total'])){
+                    $ingresos_t2[$t2] = '0'; 
+                } else {
+                    $ingresos_t2[$t2] = $fila['monto_total']; 
+                }
+                $t2++;
+            }
+
+            $sucursal_sur = implode(',',$ingresos_t2);
+
+
+            $ingresos_t3 = array();
+            $t3 = 1;
+
+            while ($t3 <= 12) {
+                $query = "exec sp_IngresosProductoTienda " . $t3 . ", 'Sucursal Puebla', '" . $articulo . "'" ;
+                $resultado = sqlsrv_query($conn_sis, $query);
+                $fila = sqlsrv_fetch_array($resultado);
+                
+                if(is_null($fila['monto_total'])){
+                    $ingresos_t3[$t3] = '0'; 
+                } else {
+                    $ingresos_t3[$t3] = $fila['monto_total']; 
+                }
+                $t3++;
+            }
+
+            $sucursal_puebla = implode(',',$ingresos_t3);
+
+
+            echo "<canvas id='ingresos_producto_tienda';> </canvas>";
+            echo "<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js'></script>";
+
+            echo "<script>
+                                    
+                var grafica = document.getElementById('ingresos_producto_tienda').getContext('2d');
+                var ingresos_mes = new Chart( grafica, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                        datasets: [{
+                                label: 'Sucursal Norte',
+                                data: [" . $sucursal_norte . "],
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1 
+                            },
+                            {
+                                label: 'Sucursal Sur',
+                                data: [" . $sucursal_sur . "],
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Sucursal Puebla',
+                                data: [" . $sucursal_puebla . "],
+                                backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                                borderColor: 'rgba(153, 102, 255, 1)',
+                                borderWidth: 1 
+                            }
+                        ]
+                    }
+                }); 
+            ";
+            echo "</script>";
+            sqlsrv_close($conn_sis);
+        }
+
+
     }
 ?>

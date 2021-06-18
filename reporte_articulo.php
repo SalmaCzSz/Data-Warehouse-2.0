@@ -1,5 +1,5 @@
 <?php
-    include("bd/Consultas.php");
+    include("bd/Reportes.php");
 ?>
 <!DOCTYPE html>
 <html>
@@ -73,44 +73,106 @@
                         </ul>
                     </div>
                 </nav>
+                
+                <form action="" method="post" id="consulta_clientes">
                 <div class="container-fluid">
                     <div class="d-sm-flex justify-content-between align-items-center mb-4">
-                        <h3 class="text-dark mb-0">Tablero de Control</h3>
+                        <h3 class="text-dark mb-0">Desempeño de los artículos</h3>
                     </div>
+                    
                     <div class="row">
-                        <div class="col-md-6 col-xl-3 mb-4">
-                            <div class="card shadow border-start-primary py-2">
+                        <div class="col-md-6 col-xl-12 mb-4">
+                            <div class="card shadow border-start-warning py-2">
                                 <div class="card-body">
                                     <div class="row align-items-center no-gutters">
                                         <div class="col me-2">
-                                            <div class="text-uppercase text-primary fw-bold text-xs mb-1">
-                                                <span>INGRESO TOTAL&nbsp; <?php echo date('Y'); ?> </span>
-                                            </div>
-                                            <div class="text-dark fw-bold h6 mb-0">
-                                                <span style="font-size: 15px;">
-                                                    <?php
-                                                        $consultas = new Consultas();
-                                                        $consultas->recuperar_IngresoTotalAnual();
-                                                    ?>
-                                                </span>
-                                            </div>
+                                            <center>
+                                            <table>
+                                                <tr>
+                                                    <td> <span>Artículo: </span> </td>
+                                                    <td>
+                                                        <select name="nombres_articulos" id="nombres_articulos" style="width:250px;" class="form-select">
+                                                            <option value="Seleccione"> Seleccione </option>
+                                                            <?php
+                                                                $reportes = new Reportes();
+                                                                $reportes->recuperar_Articulos();
+                                                            ?>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-outline-primary"  name="btn_buscar" id="btn_buscar" onclick="Buscar()"> Buscar </button>
+                                                    </td>
+                                                </tr>
+                                                <tr colspan="3" style="text-align: center;">  
+                                                    <td colspan='3'>
+                                                        <center>
+                                                        <?php
+                                                            if(isset($_POST['btn_buscar'])) {
+                                                                $nombre = $_POST['nombres_articulos'];
+
+                                                                if($nombre != 'Seleccione'){
+                                                                    $reportes = new Reportes();
+                                                                    $reportes->recuperar_InfoArticulos($nombre);
+                                                                }
+                                                            } 
+                                                        ?>  
+                                                        </center>   
+                                                    </td>                                                            
+                                                </tr>
+                                            </table>   
+                                            </center>
                                         </div>
-                                        <div class="col-auto"><i class="fas fa-dollar-sign fa-2x text-gray-300"></i></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6 col-xl-3 mb-4">
-                            <div class="card shadow border-start-success py-2">
+                    </div>
+
+
+                    <div class="row" id="grafica_VentasTienda">
+                        <div class="col-lg-8 col-xl-8">
+                            <div class="card shadow mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="text-primary fw-bold m-0">Ingresos por sucursal - <?php echo date('Y'); ?></h6>
+                                    <div class="dropdown no-arrow">
+                                        <button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button"><i class="fas fa-ellipsis-v text-gray-400"></i></button>
+                                    </div>
+                                </div>
+                                <div class="card-body" style="margin:auto; width:90%; heigth:100%"> <!-- style="margin:auto; width:50%; heigth:100%"-->
+                                    <?php
+                                        $reportes = new Reportes();
+                                        if(isset($_POST['btn_buscar'])) {
+                                            $nombre = $_POST['nombres_articulos'];
+
+                                            if($nombre != 'Seleccione'){
+                                                $reportes = new Reportes();
+                                                $reportes->recuperar_IngresosProductoTienda($nombre);
+                                            }
+                                        } 
+                                    ?> 
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-xl-4 mb-4">
+                            <div class="card shadow border-start-primary py-2">
                                 <div class="card-body">
                                     <div class="row align-items-center no-gutters">
                                         <div class="col me-2">
-                                            <div class="text-uppercase text-success fw-bold text-xs mb-1"><span>TIENDA CON MÁS VENTAS</span></div>
+                                            <div class="text-uppercase text-info fw-bold text-xs mb-1">
+                                                <span>SUCURSAL NORTE:</span>
+                                            </div>
                                             <div class="text-dark fw-bold h6 mb-0">
                                                 <span style="font-size: 15px;">
                                                     <?php
-                                                        $consultas = new Consultas();
-                                                        $consultas->recuperar_SucursalMasVentas();
+                                                        if(isset($_POST['btn_buscar'])) {
+                                                            $nombre = $_POST['nombres_articulos'];
+
+                                                            if($nombre != 'Seleccione'){
+                                                                $reportes = new Reportes();
+                                                                $reportes->recuperar_TotalUnidades('Sucursal Norte', $nombre);
+                                                            }
+                                                        } 
                                                     ?>
                                                 </span>
                                             </div>
@@ -118,115 +180,71 @@
                                         <div class="col-auto"><i class="fas fa-store fa-2x text-gray-300"></i></div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-xl-3 mb-4">
+                            </div>  
+                            <br>
                             <div class="card shadow border-start-info py-2">
                                 <div class="card-body">
                                     <div class="row align-items-center no-gutters">
                                         <div class="col me-2">
-                                            <div class="text-uppercase text-info fw-bold text-xs mb-1"><span>ARTÍCULO MÁS VENDIDO</span></div>
+                                            <div class="text-uppercase text-info fw-bold text-xs mb-1">
+                                                <span>SUCURSAL SUR:</span>
+                                            </div>
                                             <div class="row g-0 align-items-center">
                                                 <div class="col-auto">
                                                     <div class="text-dark fw-bold h6 mb-0 me-3">
                                                         <?php
-                                                            $consultas = new Consultas();
-                                                            $consultas->recuperar_ProductoMasVendido();
+                                                            if(isset($_POST['btn_buscar'])) {
+                                                                $nombre = $_POST['nombres_articulos'];
+
+                                                                if($nombre != 'Seleccione'){
+                                                                    $reportes = new Reportes();
+                                                                    $reportes->recuperar_TotalUnidades('Sucursal Sur', $nombre);
+                                                                }
+                                                            } 
                                                         ?>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-auto"><i class="fas fa-shopping-basket fa-2x text-gray-300"></i></div>
+                                        <div class="col-auto"><i class="fas fa-store fa-2x text-gray-300"></i></div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-6 col-xl-3 mb-4">
-                            <div class="card shadow border-start-warning py-2">
+                            <br>
+                            <div class="card shadow border-start-info py-2">
                                 <div class="card-body">
                                     <div class="row align-items-center no-gutters">
                                         <div class="col me-2">
-                                            <div class="text-uppercase text-warning fw-bold text-xs mb-1"><span>CLIENTE DEL MES</span></div>
-                                            <div class="text-dark fw-bold h6 mb-0">
-                                                <?php
-                                                    $consultas = new Consultas();
-                                                    $consultas->recuperar_ClienteMasCompras();
-                                                ?>
+                                            <div class="text-uppercase text-info fw-bold text-xs mb-1">
+                                                <span>SUCURSAL PUEBLA:</span>
+                                            </div>
+                                            <div class="row g-0 align-items-center">
+                                                <div class="col-auto">
+                                                    <div class="text-dark fw-bold h6 mb-0 me-3">
+                                                        <?php
+                                                            if(isset($_POST['btn_buscar'])) {
+                                                                $nombre = $_POST['nombres_articulos'];
+
+                                                                if($nombre != 'Seleccione'){
+                                                                    $reportes = new Reportes();
+                                                                    $reportes->recuperar_TotalUnidades('Sucursal Puebla', $nombre);
+                                                                }
+                                                            } 
+                                                        ?>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-auto"><i class="far fa-smile fa-2x text-gray-300"></i></div>
+                                        <div class="col-auto"><i class="fas fa-store fa-2x text-gray-300"></i></div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-8 col-xl-12">
-                            <div class="card shadow mb-4">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h6 class="text-primary fw-bold m-0">INGRESOS <?php echo date('Y'); ?> </h6>
-                                    <div class="dropdown no-arrow"><button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button"><i class="fas fa-ellipsis-v text-gray-400"></i></button></div>
-                                </div>
-                                <div class="card-body" style="margin:auto; width:90%; heigth:100%"> <!-- style="margin:auto; width:50%; heigth:100%"-->
-                                    <?php
-                                        $consultas = new Consultas();
-                                        $consultas->recuperar_IngresosMes();
-                                    ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-lg-5 col-xl-4">
-                            <div class="card shadow mb-4">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h6 class="text-primary fw-bold m-0">VENTAS SUCURSAL NORTE</h6>
-                                    <div class="dropdown no-arrow"><button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button"><i class="fas fa-ellipsis-v text-gray-400"></i></button></div>
-                                </div>
-                                <div class="card-body">
-                                    <?php
-                                        $consultas = new Consultas();
-                                        $consultas->recuperar_ProductosTienda('Norte');
-                                    ?>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="col-lg-5 col-xl-4">
-                            <div class="card shadow mb-4">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h6 class="text-primary fw-bold m-0">VENTAS SUCURSAL SUR</h6>
-                                    <div class="dropdown no-arrow"><button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button"><i class="fas fa-ellipsis-v text-gray-400"></i></button></div>
-                                </div>
-                                <div class="card-body">
-                                    <?php
-                                        $consultas = new Consultas();
-                                        $consultas->recuperar_ProductosTienda('Sur');
-                                    ?>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="col-lg-5 col-xl-4">
-                            <div class="card shadow mb-4">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h6 class="text-primary fw-bold m-0">VENTAS SUCURSAL PUEBLA</h6>
-                                    <div class="dropdown no-arrow"><button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button"><i class="fas fa-ellipsis-v text-gray-400"></i></button></div>
-                                </div>
-                                <div class="card-body">
-                                    <?php
-                                        $consultas = new Consultas();
-                                        $consultas->recuperar_ProductosTienda('Puebla');
-                                    ?>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                </form>
+            </div>
+        
             <footer class="bg-white sticky-footer">
                 <div class="container my-auto">
                     <div class="text-center my-auto copyright"><span>4CV70 - EQUIPO 5</span></div>
@@ -241,5 +259,14 @@
     <!--Scripts para las gráficas-->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.3.2/dist/chart.min.js"> </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script  type="text/javascript">
+        function Buscar(){
+            var select = document.getElementById("nombres_articulos").value;//El <select>
+
+            if(select == "Seleccione"){
+                alert("Por favor, seleccione un artículo.");
+            }     
+        }
+    </script>
 </body>
 </html>
