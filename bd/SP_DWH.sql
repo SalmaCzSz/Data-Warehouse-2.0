@@ -361,7 +361,7 @@ GO
 CREATE PROCEDURE sp_UnidadesSucursal @tienda varchar(15), @articulo varchar(20)
 AS
 BEGIN
-	SELECT SUM(HechosVentas.cantidad) 
+	SELECT SUM(HechosVentas.cantidad) Unidades
 		FROM HechosVentas JOIN DimArticulo ON HechosVentas.id_art = DimArticulo.id_art
 		JOIN DimTienda ON HechosVentas.id_tienda = DimTienda.id_tienda
 		Where YEAR(HechosVentas.fecha) = '' + YEAR(GETDATE()) + ''
